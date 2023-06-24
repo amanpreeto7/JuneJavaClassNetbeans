@@ -25,7 +25,7 @@ public class SingletonClass {
                 PreparedStatement ps = connection.prepareStatement(createStudent);
                 ps.execute();
                 
-                String registerTable = "CREATE TABLE IF NOT EXISTS user(id INT, firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), phoneNumber VARCHAR(255), password VARCHAR(255), PRIMARY KEY(id))";
+                String registerTable = "CREATE TABLE IF NOT EXISTS user(id INT AUTO_INCREMENT, firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), phoneNumber VARCHAR(255), password VARCHAR(255), PRIMARY KEY(id))";
                 PreparedStatement psRegister = connection.prepareStatement(registerTable);
                 psRegister.execute();
             }

@@ -4,6 +4,9 @@
  */
 package com.mycompany.firstproject;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -11,7 +14,9 @@ import javax.swing.JOptionPane;
  * @author o7solutions
  */
 public class LoginFrame extends javax.swing.JFrame {
+
     SingletonClass singletonClass = SingletonClass.getInstance();
+
     /**
      * Creates new form LoginFrame
      */
@@ -113,12 +118,24 @@ public class LoginFrame extends javax.swing.JFrame {
 
     private void loginBtnMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginBtnMouseClicked
         // TODO add your handling code here:
-        if(email.getText().isEmpty()){
+        if (email.getText().isEmpty()) {
             JOptionPane.showMessageDialog(rootPane, "Enter email");
-        }else if(password.getText().isEmpty()){
+        } else if (password.getText().isEmpty()) {
             JOptionPane.showMessageDialog(rootPane, "Enter password");
-        }else{
-            
+        } else {
+            String selectStatement = "SELECT * FROM user WHERE email=?, password = ?";
+            try {
+                PreparedStatement ps = singletonClass.connection.prepareCall(selectStatement);
+                ps.setString(1, email.getText().toString());
+                ps.setString(2, password.getText().toString());
+                ResultSet rs = ps.executeQuery();
+                UserModel userModel = new UserModel();
+                userModel.setEmail(rs.getString("email"));
+                userModel.setFirstName(rs.getString("firstName"));
+                System.out.println("user model values "+userModel);
+            } catch (SQLException sqlException) {
+                System.out.println("in catch "+sqlException.getMessage());
+            }
         }
     }//GEN-LAST:event_loginBtnMouseClicked
 

@@ -5,6 +5,7 @@
 package com.mycompany.firstproject;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 /**
@@ -154,7 +155,24 @@ public class RegistrationForm extends javax.swing.JFrame {
         }else{
             
             String insertInDB = "INSERT INTO user(firstName, lastName, email, phoneNumber, password) VALUES(?,?,?,?,?)";
-            PreparedStatement prepareStatemnt = singletonClass.connection.prepareCall(insertInDB);
+            try{
+                PreparedStatement prepareStatement = singletonClass.connection.prepareCall(insertInDB);
+                prepareStatement.setString(1, firstName.getText().toString());
+                prepareStatement.setString(2, lastName.getText().toString());
+                prepareStatement.setString(3, email.getText().toString());
+                prepareStatement.setString(4, phoneNumber.getText().toString());
+                prepareStatement.setString(5, password.getText().toString());
+                Boolean isInserted =  prepareStatement.execute();
+                if(isInserted){
+                    LoginFrame loginFrame = new LoginFrame();
+                    loginFrame.setVisible(true);
+                    this.dispose();
+                }
+
+            }catch(SQLException sqlException){
+                System.out.println("in exception "+sqlException.getMessage());
+                
+            }
         
             //next screen
         }
