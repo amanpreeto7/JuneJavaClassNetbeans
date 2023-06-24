@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
  * @author o7solutions
  */
 public class LoginFrame extends javax.swing.JFrame {
-
+    SingletonClass singletonClass = SingletonClass.getInstance();
     /**
      * Creates new form LoginFrame
      */
