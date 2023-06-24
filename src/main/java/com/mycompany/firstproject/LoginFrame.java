@@ -128,19 +128,14 @@ public class LoginFrame extends javax.swing.JFrame {
                 PreparedStatement ps = singletonClass.connection.prepareCall(selectStatement);
                 ps.setString(1, email.getText().toString());
                 ps.setString(2, password.getText().toString());
-//                Boolean isUpdated = ps.execute();
-//                System.out.println("in update "+isUpdated);
                 ResultSet rs = ps.executeQuery();
-                            while (rs.next()) {
-
-                UserModel userModel = new UserModel();
-                System.out.println("rs.getString(\"email\") "+rs.getString("email"));
-                userModel.setEmail(rs.getString("email"));
-                            }
-//                userModel.setFirstName(rs.getString("firstName"));
-//                System.out.println("user model values "+userModel);
+                while (rs.next()) {
+                    UserModel userModel = new UserModel();
+                    System.out.println("rs.getString(\"email\") " + rs.getString("email"));
+                    userModel.setEmail(rs.getString("email"));
+                }
             } catch (SQLException sqlException) {
-                System.out.println("in catch "+sqlException.getMessage());
+                System.out.println("in catch " + sqlException.getMessage());
             }
         }
     }//GEN-LAST:event_loginBtnMouseClicked
