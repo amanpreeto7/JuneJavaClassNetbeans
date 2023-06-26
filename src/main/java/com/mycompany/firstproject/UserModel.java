@@ -9,8 +9,18 @@ package com.mycompany.firstproject;
  * @author o7solutions
  */
 public class UserModel {
+    private int id;
     private String firstName, lastName, phoneNumber, email;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    
     public String getFirstName() {
         return firstName;
     }

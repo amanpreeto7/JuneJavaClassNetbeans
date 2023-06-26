@@ -133,6 +133,12 @@ public class LoginFrame extends javax.swing.JFrame {
                     UserModel userModel = new UserModel();
                     System.out.println("rs.getString(\"email\") " + rs.getString("email"));
                     userModel.setEmail(rs.getString("email"));
+                    userModel.setId(rs.getInt(1));
+                    userModel.setFirstName(rs.getString("firstName"));
+                    userModel.setLastName(rs.getString("lastName"));
+                    UserDetails userDetails = new UserDetails(userModel);
+                    userDetails.setVisible(true);
+                    this.dispose();
                 }
             } catch (SQLException sqlException) {
                 System.out.println("in catch " + sqlException.getMessage());
