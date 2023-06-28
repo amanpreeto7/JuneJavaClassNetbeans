@@ -4,6 +4,9 @@
  */
 package com.mycompany.firstproject;
 
+import java.awt.Image;
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author o7solutions
@@ -15,6 +18,8 @@ public class BackgroundImage extends javax.swing.JFrame {
      */
     public BackgroundImage() {
         initComponents();
+        jLabel1.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/resources/constraintlayout.png")).getImage().getScaledInstance(jLabel1.getWidth(), jLabel1.getHeight(), Image.SCALE_DEFAULT)));
+
     }
 
     /**
@@ -72,7 +77,7 @@ public class BackgroundImage extends javax.swing.JFrame {
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/loginBackGround.png"))); // NOI18N
         getContentPane().add(jLabel1);
-        jLabel1.setBounds(0, 0, 400, 300);
+        jLabel1.setBounds(0, 0, 470, 340);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
