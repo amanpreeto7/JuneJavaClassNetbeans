@@ -5,6 +5,7 @@
 package com.mycompany.firstproject;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
@@ -14,11 +15,33 @@ import javax.swing.JOptionPane;
  */
 public class RegistrationForm extends javax.swing.JFrame {
     private SingletonClass singletonClass = SingletonClass.getInstance();
+    int id = -1;
     /**
      * Creates new form RegistrationForm
      */
     public RegistrationForm() {
         initComponents();
+    }
+    
+    public RegistrationForm(int id){
+        this.id = id;
+        initComponents();
+        getInfo();
+    }
+    
+    public void getInfo(){
+        try{
+            String statement = "SELECT * FROM user where id =?";
+            PreparedStatement ps = singletonClass.connection.prepareCall(statement);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                email.setText(rs.getString("email"));
+                firstName.setText(rs.getString("firstName"));
+                lastName.setText(rs.getString("lastName"));
+            }
+        }catch(SQLException sqlException){
+        System.out.println("in exception "+sqlException.getMessage());}
     }
 
     /**
@@ -147,14 +170,38 @@ public class RegistrationForm extends javax.swing.JFrame {
 
     private void registerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registerMouseClicked
         // TODO add your handling code here:
-        
+           System.out.print("on click ");
         if(email.getText().isEmpty()){
             JOptionPane.showMessageDialog(rootPane, "Enter your email");
         }else if(password.getText().isEmpty()){
             JOptionPane.showMessageDialog(rootPane, "enter your password");
-        }else{
+        }else if(id>-1){
             
-            String insertInDB = "INSERT INTO user(firstName, lastName, email, phoneNumber, password) VALUES(?,?,?,?,?)";
+            String insertInDB = "UPDATE user SET firstName = ?, lastName = ?, email= ?, phoneNumber = ?, password=?  WHERE  id = ?";
+            try{
+                PreparedStatement prepareStatement = singletonClass.connection.prepareCall(insertInDB);
+                prepareStatement.setString(1, firstName.getText().toString());
+                prepareStatement.setString(2, lastName.getText().toString());
+                prepareStatement.setString(3, email.getText().toString());
+                prepareStatement.setString(4, phoneNumber.getText().toString());
+                prepareStatement.setString(5, password.getText().toString());
+                prepareStatement.setInt(6, id);
+                int isInserted =  prepareStatement.executeUpdate();
+                System.out.print("isInserted "+isInserted);
+                if(isInserted>0){
+                    TableFrame loginFrame = new TableFrame();
+                    loginFrame.setVisible(true);
+                    this.dispose();
+                }
+
+            }catch(SQLException sqlException){
+                System.out.println("in exception "+sqlException.getMessage());
+                
+            }
+        
+            //next screen
+        }else{
+          String insertInDB = "INSERT INTO user(firstName, lastName, email, phoneNumber, password) VALUES(?,?,?,?,?)";
             try{
                 PreparedStatement prepareStatement = singletonClass.connection.prepareCall(insertInDB);
                 prepareStatement.setString(1, firstName.getText().toString());
@@ -172,10 +219,7 @@ public class RegistrationForm extends javax.swing.JFrame {
             }catch(SQLException sqlException){
                 System.out.println("in exception "+sqlException.getMessage());
                 
-            }
-        
-            //next screen
-        }
+            }}
         
     }//GEN-LAST:event_registerMouseClicked
 

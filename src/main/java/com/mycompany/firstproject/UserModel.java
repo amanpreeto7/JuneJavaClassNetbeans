@@ -12,6 +12,15 @@ public class UserModel {
     private int id;
     private String firstName, lastName, phoneNumber, email;
 
+    public UserModel(int id, String firstName, String lastName, String phoneNumber, String email) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+    }
+
+    
     public int getId() {
         return id;
     }

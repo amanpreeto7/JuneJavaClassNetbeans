@@ -7,43 +7,54 @@ package com.mycompany.firstproject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.SpinnerListModel;
+import javax.swing.SpinnerModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import net.proteanit.sql.DbUtils;
 
 /**
  *
  * @author o7solutions
  */
-public class TableFrame extends javax.swing.JFrame {
-    private SingletonClass singletonClass = SingletonClass.getInstance();
+public class ListFrame extends javax.swing.JFrame {
+    
+    SingletonClass singletonClass = SingletonClass.getInstance();
 
     /**
-     * Creates new form TableFrame
+     * Creates new form ListFrame
      */
-    public TableFrame() {
+    public ListFrame() {
         initComponents();
         getUsers();
     }
     
     public void getUsers(){
+    
         try{
-            String selectStatement = "Select * FROM user";
-            PreparedStatement ps = singletonClass.connection.prepareCall(selectStatement);
-            ResultSet rs = ps.executeQuery();
-            String[] headers = {"id", "name", "email"};
-            DefaultTableModel dtm = new DefaultTableModel(null, headers);
-            table.setModel(dtm);
-            
+            String selectStatement = "SELECT * FROM user";
+            PreparedStatement preparedStatement = singletonClass.connection.prepareStatement(selectStatement);
+            ResultSet rs = preparedStatement.executeQuery();
+              //  table.setModel(DbUtils.resultSetToTableModel(rs));
+            String[] rowNames = {"srno", "name", "email"};
+            DefaultTableModel model = new DefaultTableModel(null, rowNames);
+            table.setModel(model);
             Object[] row = new Object[3];
+            ArrayList<UserModel> userModel = new ArrayList<>();
+
             while(rs.next()){
-                row[0] = rs.getString("id");
-                row[1] = rs.getString("firstName") +  " "+ rs.getString("lastName");
+                row[0] = rs.getInt(1);
+                row[1] = rs.getString(2)+" "+ rs.getString(3);
                 row[2] = rs.getString("email");
-                dtm.addRow(row);
+                model.addRow(row);
+                userModel.add(new UserModel(rs.getInt(1),rs.getString(2), rs.getString(3),rs.getString(4), rs.getString(5) ));
             }
-            
+            SpinnerListModel monthModel = new SpinnerListModel(userModel );
+
+            spinner.setModel(model);
         }catch(SQLException sqlException){
-            System.out.print("in exception "+ sqlException.getMessage() );
-        }
+        System.out.println("in exception "+sqlException.getMessage());}
     }
 
     /**
@@ -57,6 +68,7 @@ public class TableFrame extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
+        spinner = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -82,17 +94,20 @@ public class TableFrame extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addGap(122, 122, 122)
+                .addComponent(spinner, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addComponent(spinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 369, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -100,15 +115,10 @@ public class TableFrame extends javax.swing.JFrame {
 
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         // TODO add your handling code here:
-        DefaultTableModel dfm = (DefaultTableModel)table.getModel();
-        int rowSelected = table.getSelectedRow();
-        String id = dfm.getValueAt(rowSelected, 0).toString() ;
-        System.out.println("Selected row id "+id);
         
-        RegistrationForm registerForm = new RegistrationForm(Integer.parseInt(id));
-        registerForm.setVisible(true);
-        dispose();
-        
+       DefaultTableModel dtm=(DefaultTableModel)table.getModel();
+        int selectedrow=table.getSelectedRow();
+        String id = dtm.getValueAt(selectedrow,0).toString();
     }//GEN-LAST:event_tableMouseClicked
 
     /**
@@ -128,26 +138,27 @@ public class TableFrame extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TableFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TableFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstspinnerantiationException ex) {
+            java.util.logging.Logger.getLogger(ListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TableFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TableFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ListFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new TableFrame().setVisible(true);
+                new ListFrame().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSpinner spinner;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }
